@@ -19,6 +19,7 @@ import {
   PublishingLogic__factory,
   RevertCollectModule__factory,
   TimedFeeCollectModule__factory,
+  WhitelistedTimedFeeCollectModule__factory,
   TransparentUpgradeableProxy__factory,
   ProfileTokenURILogic__factory,
   LensPeriphery__factory,
@@ -190,6 +191,14 @@ task(
     [lensHub.address, moduleGlobals.address],
     'contracts/core/modules/collect/TimedFeeCollectModule.sol:TimedFeeCollectModule'
   );
+  console.log('\n\t-- Deploying whitelistedTimedFeeCollectModule --');
+  const whitelistedTimedFeeCollectModule = await deployWithVerify(
+    new WhitelistedTimedFeeCollectModule__factory(deployer).deploy(lensHub.address, moduleGlobals.address, {
+      nonce: deployerNonce++,
+    }),
+    [lensHub.address, moduleGlobals.address],
+    'contracts/core/modules/collect/TimedFeeCollectModule.sol:TimedFeeCollectModule'
+  );
   console.log('\n\t-- Deploying limitedTimedFeeCollectModule --');
   const limitedTimedFeeCollectModule = await deployWithVerify(
     new LimitedTimedFeeCollectModule__factory(deployer).deploy(
@@ -296,6 +305,11 @@ task(
     })
   );
   await waitForTx(
+    lensHub.whitelistCollectModule(whitelistedTimedFeeCollectModule.address, true, {
+      nonce: governanceNonce++,
+    })
+  );
+  await waitForTx(
     lensHub.whitelistCollectModule(limitedTimedFeeCollectModule.address, true, {
       nonce: governanceNonce++,
     })
@@ -349,6 +363,7 @@ task(
     'fee collect module': feeCollectModule.address,
     'limited fee collect module': limitedFeeCollectModule.address,
     'timed fee collect module': timedFeeCollectModule.address,
+    'whitelisted timed fee collect module': whitelistedTimedFeeCollectModule.address,
     'limited timed fee collect module': limitedTimedFeeCollectModule.address,
     'revert collect module': revertCollectModule.address,
     'free collect module': freeCollectModule.address,

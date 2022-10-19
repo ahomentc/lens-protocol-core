@@ -43,6 +43,8 @@ import {
   RevertCollectModule__factory,
   TimedFeeCollectModule,
   TimedFeeCollectModule__factory,
+  WhitelistedTimedFeeCollectModule,
+  WhitelistedTimedFeeCollectModule__factory,
   TransparentUpgradeableProxy__factory,
   LensPeriphery,
   LensPeriphery__factory,
@@ -112,6 +114,7 @@ export let collectNFTImpl: CollectNFT;
 // Collect
 export let feeCollectModule: FeeCollectModule;
 export let timedFeeCollectModule: TimedFeeCollectModule;
+export let whitelistedTimedFeeCollectModule: WhitelistedTimedFeeCollectModule;
 export let freeCollectModule: FreeCollectModule;
 export let revertCollectModule: RevertCollectModule;
 export let limitedFeeCollectModule: LimitedFeeCollectModule;
@@ -223,6 +226,10 @@ before(async function () {
     lensHub.address,
     moduleGlobals.address
   );
+  whitelistedTimedFeeCollectModule = await new WhitelistedTimedFeeCollectModule__factory(deployer).deploy(
+    lensHub.address,
+    moduleGlobals.address
+  );
   limitedFeeCollectModule = await new LimitedFeeCollectModule__factory(deployer).deploy(
     lensHub.address,
     moduleGlobals.address
@@ -263,6 +270,7 @@ before(async function () {
   expect(lensHub).to.not.be.undefined;
   expect(currency).to.not.be.undefined;
   expect(timedFeeCollectModule).to.not.be.undefined;
+  expect(whitelistedTimedFeeCollectModule).to.not.be.undefined;
   expect(mockFollowModule).to.not.be.undefined;
   expect(mockReferenceModule).to.not.be.undefined;
 
