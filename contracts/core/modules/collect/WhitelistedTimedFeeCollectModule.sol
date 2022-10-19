@@ -126,7 +126,6 @@ contract WhitelistedTimedFeeCollectModule is FeeModuleBase, FollowValidationModu
         uint256 endTimestamp = _dataByPublicationByProfile[profileId][pubId].endTimestamp;
         if (block.timestamp > endTimestamp) revert Errors.CollectExpired();
 
-        // Change this to use revert and Errors with a new error
         bytes32 merkleRoot = _dataByPublicationByProfile[profileId][pubId].merkleRoot;
         (bytes32[] memory decodedProof) = abi.decode(data[64:], (bytes32[]));
         require(
